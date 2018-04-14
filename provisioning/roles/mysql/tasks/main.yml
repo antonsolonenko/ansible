@@ -1,0 +1,28 @@
+---
+- name: Install the mysql packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+    cache_valid_time: 600
+  with_items: "{{ mysql_packages }}"
+
+- name: Set max_connections
+  mysql_variables:
+    variable: max_connections
+    value: 700
+
+- name: Create the database's
+  mysql_db: 
+    name: "{{ item.name }}"
+    collation: "{{ item.collation }}"
+    encoding: "{{ item.encoding }}"
+    state: present
+  with_items: "{{ mysql_dbs }}"
+
+- name: Create users
+  mysql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    priv: "{{ item.priv }}"
+    state: present
+  with_items: "{{ mysql_users }}"

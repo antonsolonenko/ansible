@@ -1,0 +1,15 @@
+---
+apache_packages:
+  - apache2
+  - libapache2-mpm-itk
+
+apache_mods:
+  - rewrite
+
+apache_sites:
+  - test1.conf
+  - test2.conf
+
+apache_users:
+  - {name: "user1", group: "group1", folder: "/sites/test1"}
+  - {name: "user2", group: "group2", folder: "/sites/test2"}

@@ -1,0 +1,10 @@
+---
+- name: Install WordPress, MySQL, Apache, Nginx
+  hosts: webserver
+  become: yes
+  roles:
+    - mysql
+    - apache
+    - nginx
+    - php
+    - wp

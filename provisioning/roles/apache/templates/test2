@@ -1,0 +1,13 @@
+<VirtualHost 127.0.0.1:8081>
+	ServerName test2.local
+	ServerAlias www.test2.local
+	DocumentRoot "/sites/test2/wordpress"
+	ErrorLog /sites/test2/error_log
+	CustomLog /sites/test2/access_log combined
+	AssignUserId user2 group2
+        <Directory "/sites/test2/wordpress">
+                AllowOverride None
+                Require all granted
+        </Directory>
+
+</VirtualHost>

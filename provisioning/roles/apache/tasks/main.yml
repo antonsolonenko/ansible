@@ -1,0 +1,66 @@
+---
+- name: Install apache packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+    cache_valid_time: 600
+  with_items: "{{ apache_packages }}"
+
+- name: Enable apache modules
+  apache2_module:    
+      state: present
+      name: "{{ item }}"
+  with_items: "{{ apache_mods }}"
+
+- name: Configure ports.conf
+  template:
+    src: "ports.conf"
+    dest: "/etc/apache2/ports.conf"
+
+- name: Copy test1 site
+  template:
+    src: "test1"
+    dest: "/etc/apache2/sites-available/test1.conf"
+
+- name: Copy test2 site
+  template:
+    src: "test2"
+    dest: "/etc/apache2/sites-available/test2.conf"
+
+- name: Disable default site
+  shell: a2dissite 000-default.conf
+
+- name: Enable test1 site
+  shell: a2ensite test1
+
+- name: Enable test2 site
+  shell: a2ensite test2
+
+- name: Create groups
+  group:
+    name: "{{ item.group }}"
+    state: present
+  with_items: "{{ apache_users }}"
+
+- name: Create users
+  user:
+    name: "{{ item.name }}"
+    shell: /bin/false
+    group: "{{ item.group }}"
+  with_items: "{{ apache_users }}"
+
+- name: Create main folder
+  file:
+    path: /sites
+    state: directory
+    mode: 0755
+
+- name: Create sites folders
+  file:
+    path: "{{ item.folder }}"
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.group }}"
+    mode: 0750
+  with_items: "{{ apache_users }}"
+  notify: restart apache2

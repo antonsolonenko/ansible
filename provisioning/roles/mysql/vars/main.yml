@@ -1,0 +1,21 @@
+---
+mysql_packages:
+  - python-mysqldb
+  - mysql-server
+  - mysql-client
+
+mysql_dbs:
+  - name: dbtest1
+    collation: utf8_general_ci
+    encoding: utf8
+  - name: dbtest2
+    collation: utf8_general_ci
+    encoding: utf8
+
+mysql_users:
+  - name: user1
+    password: pass1
+    priv: dbtest1.*:ALL
+  - name: user2
+    password: pass2
+    priv: dbtest2.*:ALL

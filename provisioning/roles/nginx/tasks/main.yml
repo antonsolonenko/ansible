@@ -1,0 +1,50 @@
+---
+- name: Add nginx repo key
+  apt_key:
+    url: https://nginx.ru/keys/nginx_signing.key
+    state: present
+
+- name: Add nginx repo deb
+  apt_repository:
+    repo: deb http://nginx.org/packages/debian/ stretch nginx
+    state: present
+
+- name: Add nginx repo deb-src
+  apt_repository:
+    repo: deb-src http://nginx.org/packages/debian/ stretch nginx
+    state: present
+
+- name: Install nginx
+  apt:
+    name: nginx
+    state: latest
+    update_cache: yes
+
+- name: Copy test1 site
+  template:
+    src: "test1.local.conf"
+    dest: "/etc/nginx/conf.d/test1.local.conf"
+
+- name: Copy test2 site
+  template:
+    src: "test2.local.conf"
+    dest: "/etc/nginx/conf.d/test2.local.conf"
+
+- name: Set reset_timedout_connection
+  lineinfile:
+    dest: /etc/nginx/nginx.conf 
+    insertafter: '^http'
+    line: '    reset_timedout_connection on;'
+    state: present
+
+- name: Remove default.conf
+  file:
+    path: /etc/nginx/conf.d/default.conf
+    state: absent
+
+- name: Adding user nginx to groups
+  user:
+    name: nginx
+    groups: group1,group2
+    append: yes
+  notify: restart nginx

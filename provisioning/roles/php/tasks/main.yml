@@ -1,0 +1,17 @@
+---
+- name: Install php
+  apt:
+    name: "{{ item }}"
+    state: latest
+    cache_valid_time: 600
+  with_items: "{{ php_packages }}"
+
+- name: Search php.ini
+  shell: php -i | grep "Loaded Configuration File" | sed 's|.*> ||'
+  register: php_ini
+
+- name: Set memory_limit
+  lineinfile:
+    dest: "{{ php_ini.stdout }}"
+    regexp: "memory_limit ="
+    line: "memory_limit = 256M"
