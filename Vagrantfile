@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+  Vagrant::DEFAULT_SERVER_URL.replace('https://vagrantcloud.com')
   config.vm.box = "debian/stretch64"
   config.vm.box_version = "9.2.0"
   config.ssh.insert_key = false
